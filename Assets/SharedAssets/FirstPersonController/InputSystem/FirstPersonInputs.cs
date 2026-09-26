@@ -48,7 +48,7 @@ namespace StarterAssets
 #endif
 
                 var touchFocus = new InputAction(binding: "<pointer>/press");
-                touchFocus.performed += context => CameraManager.NotifyPlayerMoved();
+                touchFocus.performed += context => CameraManager?.NotifyPlayerMoved();
                 touchFocus.Enable();
 
                 m_FocusActionsSetUp = true;
