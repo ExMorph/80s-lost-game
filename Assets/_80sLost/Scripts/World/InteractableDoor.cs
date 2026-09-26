@@ -12,6 +12,12 @@ namespace Lost80s
         [SerializeField] private bool startsLocked;
         [SerializeField] private string lockedPrompt = "Locked";
 
+        [Header("Sound")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip openClip;
+        [SerializeField] private AudioClip closeClip;
+        [SerializeField] private AudioClip lockedClip;
+
         public string InteractPrompt => IsLocked ? lockedPrompt : (_isOpen ? openPrompt : closedPrompt);
         public bool IsLocked { get; private set; }
 
@@ -33,15 +39,25 @@ namespace Lost80s
 
         public void Interact(GameObject interactor)
         {
-            if (IsLocked) return;
+            if (IsLocked)
+            {
+                PlayClip(lockedClip);
+                return;
+            }
             _isOpen = !_isOpen;
             _targetRotation = _isOpen ? _closedRotation * Quaternion.Euler(0f, openAngle, 0f) : _closedRotation;
+            PlayClip(_isOpen ? openClip : closeClip);
         }
 
         public void Unlock()
         {
             IsLocked = false;
             Interact(null);
+        }
+
+        private void PlayClip(AudioClip clip)
+        {
+            if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
         }
     }
 }

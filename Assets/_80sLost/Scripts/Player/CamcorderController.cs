@@ -25,6 +25,12 @@ namespace Lost80s
         [Header("Input")]
         [SerializeField] private bool holdToRaise = true;
 
+        [Header("Sound")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip raiseClip;
+        [SerializeField] private AudioClip lowerClip;
+        [SerializeField] private AudioClip batteryDepletedClip;
+
         public static CamcorderController Instance { get; private set; }
 
         public bool IsRaised { get; private set; }
@@ -35,6 +41,7 @@ namespace Lost80s
         public event Action<bool> RaisedChanged;
 
         private float _battery;
+        private bool _depletedClipPlayed;
 
         private void Awake()
         {
@@ -63,6 +70,11 @@ namespace Lost80s
                 if (_battery <= 0f)
                 {
                     SetRaised(false);
+                    if (!_depletedClipPlayed)
+                    {
+                        _depletedClipPlayed = true;
+                        PlayClip(batteryDepletedClip);
+                    }
                 }
             }
         }
@@ -70,6 +82,7 @@ namespace Lost80s
         public void AddBattery(float amount)
         {
             _battery = Mathf.Clamp(_battery + amount, 0f, maxBattery);
+            if (_battery > 0f) _depletedClipPlayed = false;
         }
 
         private void SetRaised(bool raised)
@@ -80,7 +93,13 @@ namespace Lost80s
             {
                 overlayCamera.enabled = raised;
             }
+            PlayClip(raised ? raiseClip : lowerClip);
             RaisedChanged?.Invoke(raised);
+        }
+
+        private void PlayClip(AudioClip clip)
+        {
+            if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
         }
 
         private bool ReadRaiseInput()

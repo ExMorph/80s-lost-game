@@ -21,6 +21,11 @@ namespace Lost80s
         [SerializeField] private float decayPerSecond = 0.5f;
         [SerializeField] private LayerMask obstructionMask = ~0;
 
+        [Header("Sound")]
+        [SerializeField] private AudioSource audioSource;
+        [SerializeField] private AudioClip fixatedClip;
+        [SerializeField] private AudioClip lostFixationClip;
+
         public float FixationNormalized => Mathf.Clamp01(_fixation / fixationThreshold);
         public bool IsFixated { get; private set; }
 
@@ -47,12 +52,19 @@ namespace Lost80s
             {
                 IsFixated = true;
                 onFixated?.Invoke();
+                PlayClip(fixatedClip);
             }
             else if (IsFixated && _fixation <= 0f)
             {
                 IsFixated = false;
                 onLostFixation?.Invoke();
+                PlayClip(lostFixationClip);
             }
+        }
+
+        private void PlayClip(AudioClip clip)
+        {
+            if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
         }
 
         private bool IsFramed(Camera overlayCamera)

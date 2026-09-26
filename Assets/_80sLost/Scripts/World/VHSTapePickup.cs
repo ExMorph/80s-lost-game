@@ -9,6 +9,7 @@ namespace Lost80s
         [SerializeField] private string playerTag = "Player";
         [TextArea]
         [SerializeField] private string loreText;
+        [SerializeField] private AudioClip pickupClip;
 
         public UnityEvent<string> onCollected;
 
@@ -22,6 +23,7 @@ namespace Lost80s
             if (!other.CompareTag(playerTag)) return;
 
             onCollected?.Invoke(loreText);
+            if (pickupClip != null) AudioSource.PlayClipAtPoint(pickupClip, transform.position);
             gameObject.SetActive(false);
         }
     }
