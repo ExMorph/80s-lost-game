@@ -22,7 +22,6 @@ namespace Lost80s
         [SerializeField] private float effectDuration = 1f;
 
         [Header("Sound")]
-        [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip enterClip;
 
         private bool _used;
@@ -48,7 +47,7 @@ namespace Lost80s
             }
 
             ZoneEffects.Pulse(grainBoost, effectDuration);
-            if (audioSource != null && enterClip != null) audioSource.PlayOneShot(enterClip);
+            PlayerAudio.Play(enterClip);
         }
     }
 }

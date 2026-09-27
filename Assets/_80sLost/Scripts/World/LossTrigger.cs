@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace Lost80s
 {
+    /// <summary>
+    /// Generic "entering this trigger ends the run" volume - e.g. getting caught
+    /// by the corridor figure once the anomaly has been disturbed.
+    /// </summary>
     [RequireComponent(typeof(Collider))]
-    public class HintPrompt : MonoBehaviour
+    public class LossTrigger : MonoBehaviour
     {
-        [TextArea]
-        [SerializeField] private string message;
-        [SerializeField] private float displaySeconds = 6f;
-        [SerializeField] private AudioClip audioClip;
         [SerializeField] private string playerTag = "Player";
         [SerializeField] private bool triggerOnce = true;
 
@@ -21,12 +21,10 @@ namespace Lost80s
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.CompareTag(playerTag)) return;
             if (triggerOnce && _used) return;
+            if (!other.CompareTag(playerTag)) return;
             _used = true;
-
-            HintUI.Show(message, displaySeconds);
-            PlayerAudio.Play(audioClip);
+            EndingManager.TriggerCaught();
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Lost80s
         public void Interact(GameObject interactor)
         {
             onPickedUp?.Invoke();
-            if (pickupClip != null) AudioSource.PlayClipAtPoint(pickupClip, transform.position);
+            PlayerAudio.Play(pickupClip);
             gameObject.SetActive(false);
         }
     }

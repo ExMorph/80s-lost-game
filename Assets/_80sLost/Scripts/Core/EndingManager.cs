@@ -16,12 +16,16 @@ namespace Lost80s
         [SerializeField] private float targetSeconds = 180f;
 
         [Header("Sound")]
-        [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip winClip;
         [SerializeField] private AudioClip loseClip;
+        [Tooltip("Played over the final 'Субъект пропал без вести' line.")]
+        [SerializeField] private AudioClip missingClip;
+        [Tooltip("Played over the 'Испытуемый упал' line when the anomaly was disturbed before escaping.")]
+        [SerializeField] private AudioClip fellClip;
 
         private float _startTime;
         private bool _ended;
+        private bool _disturbed;
 
         private void Awake()
         {
@@ -46,6 +50,21 @@ namespace Lost80s
             _instance.HandleEscape();
         }
 
+        /// <summary>Immediately ends the run in failure (caught by the anomaly).</summary>
+        public static void TriggerCaught()
+        {
+            EnsureInstance();
+            _instance.HandleCaught();
+        }
+
+        /// <summary>Marks the run as tainted - knocking on a decoy door disturbs the anomaly
+        /// so the "correct" window no longer saves you.</summary>
+        public static void MarkDisturbed()
+        {
+            EnsureInstance();
+            _instance._disturbed = true;
+        }
+
         private static void EnsureInstance()
         {
             if (_instance != null) return;
@@ -58,6 +77,13 @@ namespace Lost80s
             if (_ended) return;
             _ended = true;
 
+            if (_disturbed)
+            {
+                PlayClip(fellClip);
+                HintUI.Show("Испытуемый упал...", 60f);
+                return;
+            }
+
             float elapsed = Time.time - _startTime;
             if (elapsed <= targetSeconds)
             {
@@ -66,9 +92,21 @@ namespace Lost80s
             }
             else
             {
-                PlayClip(loseClip);
-                StartCoroutine(LateEndingSequence());
+                TriggerLossSequence();
             }
+        }
+
+        private void HandleCaught()
+        {
+            if (_ended) return;
+            _ended = true;
+            TriggerLossSequence();
+        }
+
+        private void TriggerLossSequence()
+        {
+            PlayClip(loseClip);
+            StartCoroutine(LateEndingSequence());
         }
 
         private IEnumerator LateEndingSequence()
@@ -76,11 +114,12 @@ namespace Lost80s
             HintUI.Show("Вас не спасти - прощайте", 4f);
             yield return new WaitForSeconds(4f);
             HintUI.Show("Субъект пропал без вести...", 60f);
+            PlayClip(missingClip);
         }
 
         private void PlayClip(AudioClip clip)
         {
-            if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
+            PlayerAudio.Play(clip);
         }
     }
 }

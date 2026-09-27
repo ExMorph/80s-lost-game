@@ -16,7 +16,8 @@ namespace Lost80s
         private void OnTriggerEnter(Collider other)
         {
             if (!other.CompareTag(playerTag)) return;
-            if (escapeClip != null) AudioSource.PlayClipAtPoint(escapeClip, transform.position);
+            PlayerAudio.Play(escapeClip);
+            // If a decoy door was disturbed, EndingManager swaps this for the fatal ending.
             EndingManager.TriggerEscape();
         }
     }

@@ -15,7 +15,6 @@ namespace Lost80s
         [SerializeField] private string code = "888";
         [SerializeField] private int maxDigits = 3;
         [SerializeField] private InteractableDoor doorToUnlock;
-        [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip keyClip;
         [SerializeField] private AudioClip successClip;
         [SerializeField] private AudioClip errorClip;
@@ -99,7 +98,7 @@ namespace Lost80s
 
         private void PlayClip(AudioClip clip)
         {
-            if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
+            PlayerAudio.Play(clip);
         }
     }
 }

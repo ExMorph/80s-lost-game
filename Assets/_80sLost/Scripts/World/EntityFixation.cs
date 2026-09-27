@@ -22,7 +22,6 @@ namespace Lost80s
         [SerializeField] private LayerMask obstructionMask = ~0;
 
         [Header("Sound")]
-        [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip fixatedClip;
         [SerializeField] private AudioClip lostFixationClip;
 
@@ -64,7 +63,7 @@ namespace Lost80s
 
         private void PlayClip(AudioClip clip)
         {
-            if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
+            PlayerAudio.Play(clip);
         }
 
         private bool IsFramed(Camera overlayCamera)

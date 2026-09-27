@@ -23,7 +23,7 @@ namespace Lost80s
             if (!other.CompareTag(playerTag)) return;
 
             onCollected?.Invoke(loreText);
-            if (pickupClip != null) AudioSource.PlayClipAtPoint(pickupClip, transform.position);
+            PlayerAudio.Play(pickupClip);
             gameObject.SetActive(false);
         }
     }

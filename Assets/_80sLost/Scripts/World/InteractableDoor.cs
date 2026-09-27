@@ -11,9 +11,11 @@ namespace Lost80s
         [SerializeField] private string openPrompt = "Close";
         [SerializeField] private bool startsLocked;
         [SerializeField] private string lockedPrompt = "Locked";
+        [Tooltip("Knocking on this locked decoy door disturbs the anomaly: taints the run and reveals any listed threat objects (e.g. the corridor figure).")]
+        [SerializeField] private bool disturbsAnomalyOnKnock;
+        [SerializeField] private GameObject[] revealOnKnock;
 
         [Header("Sound")]
-        [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip openClip;
         [SerializeField] private AudioClip closeClip;
         [SerializeField] private AudioClip lockedClip;
@@ -42,6 +44,14 @@ namespace Lost80s
             if (IsLocked)
             {
                 PlayClip(lockedClip);
+                if (disturbsAnomalyOnKnock)
+                {
+                    EndingManager.MarkDisturbed();
+                    foreach (GameObject go in revealOnKnock)
+                    {
+                        if (go != null) go.SetActive(true);
+                    }
+                }
                 return;
             }
             _isOpen = !_isOpen;
@@ -57,7 +67,7 @@ namespace Lost80s
 
         private void PlayClip(AudioClip clip)
         {
-            if (audioSource != null && clip != null) audioSource.PlayOneShot(clip);
+            PlayerAudio.Play(clip);
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Lost80s
         [SerializeField] private string message = "Вы попали в аномалию. Немедленно выбирайтесь из здания.";
         [SerializeField] private float displaySeconds = 8f;
         [SerializeField] private AudioClip audioClip;
+        [Tooltip("If true, reaching this trapped landing immediately ends the run instead of only sealing the exits.")]
+        [SerializeField] private bool triggersLoss;
 
         private bool _triggered;
 
@@ -35,10 +37,8 @@ namespace Lost80s
             }
 
             HintUI.Show(message, displaySeconds);
-            if (audioClip != null)
-            {
-                AudioSource.PlayClipAtPoint(audioClip, transform.position);
-            }
+            PlayerAudio.Play(audioClip);
+            if (triggersLoss) EndingManager.TriggerCaught();
         }
     }
 }
