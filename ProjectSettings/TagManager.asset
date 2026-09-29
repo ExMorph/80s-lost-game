@@ -8,6 +8,8 @@ TagManager:
   - CinemachineTarget
   - ScreenCamera
   - cockpit_capitalLaser
+  - VHSTape
+  - Entity
   layers:
   - Default
   - TransparentFX
@@ -23,9 +25,9 @@ TagManager:
   - Camera
   - MainCameraOnly
   - Oasis_TerrainBake
-  - 
-  - 
-  - 
+  - Anomaly
+  -
+  -
   - 
   - 
   - 
